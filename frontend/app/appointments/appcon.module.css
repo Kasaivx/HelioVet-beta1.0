@@ -1,0 +1,84 @@
+.frammos {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.appointframe {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 32px 48px;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+.words {
+    color: aliceblue;
+    display: flex;
+     justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+
+}
+
+.words h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.words p {
+    margin-top: 6px;
+    color: #9ca3af;
+}
+
+/* Header Button */
+
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+ width:180px;
+    height:48px;
+   margin-right: 200px;
+    background: #397e80;
+    color: white;
+
+    border: none;
+    border-radius: 14px;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+.btn:hover {
+    background: #57afb0;}
+
+.plus {
+    width: 18px;
+    height: 18px;
+}
+
+/* Search Bar */
+.schengf {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Table Container */
+.appointconta {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.appointconta > * {
+    width: 100%;
+}

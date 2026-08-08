@@ -1,0 +1,72 @@
+.dock{
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 10px;
+gap: 16px;
+ background-color: rgba(120, 120, 120, 0.25);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+border-radius:  999px; 
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+width: fit-content;
+max-width: 90vw;
+height: auto;
+}
+
+.butt{
+   position: relative;
+   background-color: transparent;
+   border: none;
+   color: #7E8CA8;
+
+    width: 180px;
+    height: 90px;
+}
+
+
+
+.icn{
+   display: flex;
+flex-direction: column;
+
+justify-content: center;
+align-items: center;
+gap: 4px;
+
+}
+
+.icnge{
+color: #7E8CA8;
+ width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+transition: all .25s ease;
+
+}
+.pill{
+position: absolute;
+inset: 0;
+background:rgba( 121, 242,230, 0.12); 
+border-radius: 40px;
+z-index: -1;
+}
+
+.icnActive{
+
+color: #FFFFFF;
+font-size: 20px;
+    transition: color .25s ease,
+                font-size .25s ease;
+font-weight: 700;
+}
+
+.icnActive>.icnge{
+    width: 32px;
+    height: 32px;
+}
