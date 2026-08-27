@@ -1,9 +1,9 @@
 import express from "express";
-import { vetRegisterCtrlr, OwnerRegisterCtrlr, loginCtrlr } from "../controller/auth.controller.js";
+import { OwnerRegisterCtrlr, loginCtrlr, clinicRegisterCtrlr } from "../controller/auth.controller.js";
 import { authMiddleWare } from "../middleware/auth.middleware.js";
 const router = express.Router()
 
-router.post('/register/vet',vetRegisterCtrlr )
+router.post('/register/clinic',clinicRegisterCtrlr )
 
 
 router.post("/register/owner", OwnerRegisterCtrlr);

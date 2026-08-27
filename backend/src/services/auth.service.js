@@ -1,55 +1,89 @@
-import { creatUser, findByEmail } from "../repos/user.repository.js";
+import { findByEmail, findByUsrName } from "../repos/user.repository.js";
 
 import { hashcomp, hashSer } from "./hash.service.js";
 
 import { genrtToken } from "./jwt.service.js";
 import { prisma } from "../config/db.js";
-
+import { genNanoID} from "./nanoid.service.js"
 export async function register({
   email,
   password,
   phone,
   role,
+  username,
   name,
-}) {
+  clinic,
+  vet
+  },
+) {
   try {
     const used = await findByEmail(email);
-    console.log(email);
 
     if (used) {
       throw new Error("this email is already used try another one");
     }
 
+const userNameUsed = await findByUsrName(username)
+
+    if(userNameUsed){
+      throw new Error("this username is unavailable pick another one ")
+    }
+
     if (!phone) {
       throw new Error("please enter a phone number");
     }
-
-    const hashedpass = await hashSer(password);
-
-    const user = await creatUser({
-      email,
-      password: hashedpass,
-      phone,
-      role,
-    });
-
-    if (role === "VET") {
-  
-      await prisma.vet.create({
-        data: {
-          userId: user.id,
-          phone,
-        },
-      });
-    } else if (role === "OWNER") {
-      await prisma.owner.create({
-        data: {
-          userId: user.id,
-          phone,
-          name,
-        },
-      });
+    if (role === "CLINIC") {
+    if (!clinic?.licenseUrl) {
+      throw new Error("please enter your medical license");
     }
+    if (!clinic?.idCardUrl) {
+      throw new Error("please enter your ID card");
+    }
+  }
+    const hashedpass = await hashSer(password);
+    const user = await prisma.$transaction(async (tx) => {
+      const acc = await tx.user.create({ data :{
+        email,
+        password: hashedpass,
+        phone,
+        username,
+        role,}
+      });
+
+
+      if (role === "CLINIC") {
+
+
+ 
+        const clnccrtn = await tx.clinic.create({
+          data: {
+            userId: acc.id,
+            clinicname: clinic.clinicname,
+            licenseUrl: clinic.licenseUrl,
+            idCardUrl: clinic.idCardUrl,
+            nid: genNanoID("C"),
+          },
+        });
+        console.log("nano", clnccrtn.nid);
+        const vetcrtn = await tx.vet.create({
+          data: {
+            clinicId: clnccrtn.id,
+            fullName: clinic.vet.fullName,
+          },
+        });
+      } else if (role === "OWNER") {
+        await tx.owner.create({
+          data: {
+            userId: acc.id,
+            phone,
+            name,
+            isGuest:false,
+            nid: genNanoID("O"),
+          },
+        });
+      }
+      return acc
+    });
 
     const token = genrtToken(user);
 

@@ -10,12 +10,12 @@ const router = express.Router();
 
 router.use(authMiddleWare);
 
-router.get("/",roleMiddleWare("VET"),getappointments);
+router.get("/", roleMiddleWare(["VET", "CLINIC"]), getappointments);
 
-router.post("/",roleMiddleWare("VET"),createAppoinments);
+router.post("/",roleMiddleWare(["VET",'CLINIC']),createAppoinments);
 
-router.put("/:id",roleMiddleWare("VET"),editAppointments);
+router.put("/:id", roleMiddleWare(["VET", "CLINIC"]), editAppointments);
 
-router.delete("/:id",roleMiddleWare("VET"),deletappoinments);
+router.delete("/:id", roleMiddleWare(["VET", "CLINIC"]), deletappoinments);
 
 export default router;

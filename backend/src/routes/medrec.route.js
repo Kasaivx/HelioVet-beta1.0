@@ -18,10 +18,10 @@ router.use((req, res, next) => {
 
 router.use(authMiddleWare)
 
-router.get("/", roleMiddleWare("VET"),getMedicalRec)
-router.post("/",roleMiddleWare("VET"),creatMedRecCntrlr)
-router.put("/:id",roleMiddleWare("VET"),editMedRec)
-router.delete("/:id",roleMiddleWare("VET"),deleteMrec) 
+router.get("/", roleMiddleWare(["VET", "CLINIC"]), getMedicalRec);
+router.post("/", roleMiddleWare(["VET", "CLINIC"]), creatMedRecCntrlr);
+router.put("/:id", roleMiddleWare(["VET", "CLINIC"]), editMedRec);
+router.delete("/:id", roleMiddleWare(["VET", "CLINIC"]), deleteMrec); 
 
 
 

@@ -1,23 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 import {api} from"@/lib/api";
+import { Stock } from "@/types/stock";
 
-async function fetchProducts() {
+async function fetchProducts( search:string) {
+if(search){
+const res = await api.get<{results:unknown;data:Stock[]}>(`/stock?search=${search}`);
 
+return res.data.data
+
+} else{
 const res = await api.get("/stock")
 
-return res.data;
+return res.data.data;
 
-}
-
-
-export function useProducts(){
+}}
 
 
-    return useQuery({
+export function useProducts(search: string){
 
-   queryKey:['products'],
 
-    queryFn:fetchProducts
+    return useQuery<Stock[]>({
+
+   queryKey:['products',search],
+
+    queryFn: () => fetchProducts(search)
 
     })
 }

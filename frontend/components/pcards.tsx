@@ -2,7 +2,7 @@
 import { usePatients } from "@/hooks/hooks/patients";
 import style from "@/components/pcard.module.css"
 import { Patient } from "@/types/patients";
-export default function PatientsCard({ search, setSearch }:any) {
+export default function PatientsCard({ search, setSearch }:unknown) {
   const { data: patient, isLoading } = usePatients(search);
   if (isLoading) {
     return <p>LOADING. . . .</p>;

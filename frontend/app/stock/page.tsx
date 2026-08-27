@@ -1,32 +1,28 @@
 "use client"
-import { Product } from "@/types/product"
-import { useProducts } from "@/hooks/hooks/products"
+import Stock from "@/components/stck-table"
+import SearchEng from "@/components/searchEng"
+import { useState } from "react"
+import style from '@/app/stock/st.module.css'
+export default function Inven(){
+  const [search, setSearch] = useState("");
+  return (
+    <div className={style.patientframe}>
+      <div className={style.header}>
+        <div className={style.pwords}>
+          <h1>Inventory</h1>
+          <p>Manage medical supplies and medications</p>
+        </div>
 
-
-export default function Stock() {
-    
-const{
-
-data,
-isLoading
-}=useProducts()
-
-if(isLoading){
-return <p>LOADING. . . .</p>}
-  
-   
-     console.log(data);
-   
-
-return (
-  <main>
-
-
-    {data?.map((product: Product) => (
-      <div key={product.id}>
-        <p>{product.name}</p>
-        <p>{product.quantity}</p>
+        <button className={style.btn}>Add an item </button>
       </div>
-    ))}
-  </main>
-);}
+
+      <div className={style.se}>
+        <SearchEng search={search} setSearch={setSearch} />
+      </div>
+
+      <div className={style.pc}>
+        <Stock search={search} setSearch={setSearch} />
+      </div>
+    </div>
+  );
+}

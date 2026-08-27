@@ -8,6 +8,7 @@ import auth from "./routes/auth.route.js"
 import vetAppoint from"./routes/vetappointments.routes.js"
 import medrec from "./routes/medrec.route.js"
 import stock from "./routes/stock.routes.js"
+import profileget from "./routes/profile.routes.js"
 // import all controllers
 
 //data base stuff//
@@ -33,10 +34,11 @@ app.use(express.json());
 
 ///APIroutes///middleware stuff///
 app.use("/auth", auth);
-app.use("/patient", patients );
+app.use("/patients", patients );
 app.use("/vetappointments",vetAppoint);
 app.use("/medrec",medrec)
 app.use("/stock",stock)
+app.use('/profile',profileget)
 
 //hosting the server            ;ASDW
 const PORT = 5001;

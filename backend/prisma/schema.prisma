@@ -6,55 +6,83 @@ datasource db {
   provider = "postgresql"
 }
 
-model Clinic {
-  id  Int   @id @default(autoincrement())
-  dayOfWeek    String?
-  startTime    DateTime?
-  endTime      DateTime?
-  latitude     Float?
-  longitude    Float?
-  vet Vet[]
-}
 
 /// VET STUFF///
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
+  username  String   @unique
   role      UserRole
   createdAt DateTime @default(now())
   phone     String   @unique
   owner     Owner?
-  vet       Vet?
+  clinic    Clinic?
+
+}
+model Clinic {
+  id            Int   @id @default(autoincrement())
+  status       ClinicStatus     @default(PENDING)
+  clinicname  String
+  nid       String   @unique
+  userId        Int  @unique
+  workingschedule  WorkingSchedule[]
+  licenseUrl   String
+  idCardUrl    String
+  location     Location?
+  vet Vet[]
+   user         User          @relation(fields: [userId], references: [id] ,onDelete:  Cascade)
+  
 }
 
+model Location {
+   id          Int @id @default(autoincrement())
+   name        String
+   clinicId    Int @unique
+  latitude     Float? @db.DoublePrecision
+  longitude    Float? @db.DoublePrecision
+  clinic       Clinic    @relation(fields: [clinicId], references: [id])
+}
+
+model WorkingSchedule {
+id Int @id @default(autoincrement())
+clinicid   Int
+
+clinic    Clinic @relation(fields: [clinicid], references: [id])
+
+WorkingDays DayOfWeek
+StartTime   DateTime @db.Time()
+EndTime     DateTime @db.Time()
+}
+
+
 model Vet {
-  id           Int           @id @default(autoincrement())
-  userId       Int           @unique
+  id           Int           @id @default(autoincrement())        
   fullName     String
-  licenseUrl   String?
-  idCardUrl    String?
-  phone        String
-  status       VetStatus     @default(PENDING)
+  phone        String?
   clinicId     Int?
   appointments Appointment[]
   usagelogs    InvLog[]
   clinic       Clinic?       @relation(fields: [clinicId], references: [id])
-  user         User          @relation(fields: [userId], references: [id])
+ 
 }
 
 model Owner {
   id       Int       @id @default(autoincrement())
-  userId   Int       @unique
+  userId   Int ?      @unique
+  nid      String   @unique
   name     String
   phone    String
-  user     User      @relation(fields: [userId], references: [id])
+  address  String?
+  isGuest  Boolean
+  user     User?     @relation(fields: [userId], references: [id])
   patients Patient[]
 }
 
 model Patient {
   id           Int           @id @default(autoincrement())
   species      String
+  cuid        String @default(cuid()) @unique
   breed        String
   age          Int?
   ownerId      Int
@@ -67,6 +95,7 @@ model Patient {
 
 model Appointment {
   id        Int               @id @default(autoincrement())
+  cuid        String @default(cuid()) @unique
   date      DateTime
   reason    String
   status    AppointmentStatus @default(PENDING)
@@ -79,6 +108,7 @@ model Appointment {
 
 model MedicalRecord {
   id            Int          @id @default(autoincrement())
+  cuid        String @default(cuid()) @unique
   appointmentID Int
   diagnosis     String?
   treatment     String?
@@ -94,6 +124,7 @@ model MedicalRecord {
 model Attachment {
   id         Int           @id @default(autoincrement())
   url        String
+  cuid       String @default(cuid()) @unique
   type       String?
   medRecID   Int
   uploadedAt DateTime      @default(now())
@@ -102,8 +133,10 @@ model Attachment {
 
 model Product {
   id         Int      @id @default(autoincrement())
+  cuid        String @default(cuid()) @unique
   name       String
   qr         String?
+  minimumStock Int @default(5)
   quantity   Int
   expiryDate DateTime
   isActive   Boolean  @default(true)
@@ -112,6 +145,7 @@ model Product {
 
 model InvLog {
   id            Int          @id @default(autoincrement())
+  cuid          String @default(cuid()) @unique
   prdctID       Int
   vetID         Int
   timestamp     DateTime     @default(now())
@@ -136,9 +170,10 @@ enum UserRole {
   STAFF
   OWNER
   ADMIN
+  CLINIC
 }
 
-enum VetStatus {
+enum ClinicStatus {
   PENDING
   APPROVED
   REJECTED
@@ -152,4 +187,14 @@ enum Action {
 enum ActionMethod {
   MANUAL
   SCAN
+}
+
+enum DayOfWeek {
+  MONDAY
+  SUNDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
 }

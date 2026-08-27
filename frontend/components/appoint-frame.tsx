@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useAppointments } from "@/hooks/hooks/appointments";
 import { Appointment, AppointmentStatus, Props } from "@/types/appointments";

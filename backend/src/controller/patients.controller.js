@@ -1,6 +1,9 @@
 import {getP,deleteP,updateP,creatP, searchpatients} from "../repos/patient.repository.js"
 import {prisma} from "../config/db.js"
+import { findOwnerByNID } from "../repos/user.repository.js";
+import { genNanoID } from "../services/nanoid.service.js";
 export async function getPatients(req,res) {
+  console.log("waaaa l9lawy")
   const { search } = req.query;
   try{
 
@@ -8,7 +11,7 @@ export async function getPatients(req,res) {
 const results = await searchpatients(search)
 if(results.length === 0){
 
-res.status(404).json({message:"patients not found"})
+res.status(404).json({message:"patient not found"})
 
 }else{
   res.status(200).json({message:"patients were found", data:results})
@@ -68,7 +71,7 @@ res.status(404).json({message:"patients not found"})
  export async function creatPatient(req,res) {
     try{
    const owner = await prisma.owner.findUnique({
-     where: { id: req.body.ownerId },
+     where: { name: req.body.name},
    });
 
    if (!owner) {
@@ -96,4 +99,123 @@ res.status(404).json({message:"patients not found"})
     }
 
 
+     export async function vetCreatPatient(req, res) {
+    try{
+       console.log("1");
+        const {owner, ...patient}= req.body || {};
+        console.log("2");
+        const patientData = patient
+        const ownerdata = owner || {};
+        console.log("3");
+        const CownerNid = ownerdata.nid;
+        const Guest = ownerdata.isGuest;
 
+console.log("4", {
+  CownerNid,
+  Guest,
+});
+console.log("5 BEFORE CREATE");
+
+      
+
+
+        if (Guest === false){
+         
+          const findbyNid = await findOwnerByNID(ownerNid)
+    
+          if (!findbyNid){
+            return res.status(404).json({
+    message: "Owner not found"        });
+            }
+        }
+
+
+          
+
+
+console.log("BEFORE creatP");
+        
+             const creatPatient = await prisma.patient.create({
+              data:{  PetName: patientData.petName,
+               species: patientData.species,
+               breed: patientData.breed,
+               age: patientData.age,
+               owner:
+                 Guest === false
+                   ? {
+                       connect: { nid: ownerNid },
+                     }
+                   : {
+                       create: {
+                         nid: genNanoID("G"),
+                         name: ownerdata.name,
+                         phone: ownerdata.phone,
+                         address: ownerdata.address,
+                         isGuest:true
+                       },
+                     },}
+             
+             });
+            return res
+           .status(201)
+           .json({ message: "patient was created succefully", creatPatient });
+          }
+        
+        catch(err){
+
+return res.status(400).json({message:err})
+
+
+
+        
+      
+      }
+    
+        
+        
+        
+        /*  else if  (Guest === true){
+
+          const guestAcc = await prisma.$transaction(async (tx) =>{
+             const guestOwner = await tx.owner.create({
+                    name:ownerdata.name,
+                    phone:ownerdata.phone,
+                    address:ownerdata.address,
+                    isGuest:Guest
+            
+             })
+
+             return creatPatient
+ 
+          })*/
+       
+
+
+        
+
+
+        
+      
+
+  
+          
+    
+
+
+
+          
+
+     
+        
+       
+
+       
+
+          
+        
+          
+       
+
+      
+    
+     }

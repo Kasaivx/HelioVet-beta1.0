@@ -1,0 +1,31 @@
+.outershell{
+position:fixed;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(0, 0, 0, 0.5);
+z-index: 1000;
+}
+.innershell{
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    max-width: 90dvh;
+    padding: 24px;
+    background: rgba(18, 26, 43);
+border-radius: 14px;
+overflow-y: auto;
+
+}
+
+.closebtn{
+    position: absolute;
+top: 12px;
+right: 16px;
+border:solid 2px violet;
+background-color: blue;
+
+font-size: 24px;
+cursor: pointer;
+}

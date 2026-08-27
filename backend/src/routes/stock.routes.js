@@ -7,12 +7,12 @@ const router = express.Router();
 
 router.use(authMiddleWare);
 
-router.get("/", roleMiddleWare("VET"),getProduct);
+router.get("/", roleMiddleWare(["VET", "CLINIC"]), getProduct);
 
-router.post("/", roleMiddleWare("VET"),addProduct );
+router.post("/", roleMiddleWare(["VET", "CLINIC"]), addProduct);
 
-router.put("/:id", roleMiddleWare("VET"),editProduct );
+router.put("/:id", roleMiddleWare(["VET", "CLINIC"]), editProduct);
 
-router.delete("/:id", roleMiddleWare("VET"),deleteProduct );
+router.delete("/:id", roleMiddleWare(["VET", "CLINIC"]), deleteProduct);
 
 export default router;

@@ -1,7 +1,7 @@
 
 import { prisma } from "../config/db.js";
-import { addPrdct,getPrduct} from "../repos/stock.repo.js";
-import { getVetFromUserId } from "../services/gvfu.service.js";
+import { addPrdct,getPrduct, searchPrdct} from "../repos/stock.repo.js";
+import { getClincFromUserId } from "../services/gvfu.service.js";
 
 
 
@@ -17,9 +17,9 @@ export async function addProduct(req,res){
 
  const usr = req.user.userID
 
-const vet = await getVetFromUserId(usr)
-if(!vet){
-       return res.status(404).json({message:"vet not found"})
+const clinic = await getClincFromUserId(usr);
+if(!clinic){
+       return res.status(404).json({message:"clinic not found"})
 }
 
 
@@ -188,10 +188,24 @@ res.status(200).json({message:"product detail were edited succefully",updated})
 
 
 export async function getProduct(req,res) {
-
-    const getPrudctFunc = await getPrduct();
 try{
-    res.status(200).json(getPrudctFunc)
+  const{search} = req.query
+  if(search){
+const result = await searchPrdct(search)
+if(result.length === 0){
+res.status(404).json({message:"no item was found"});
+
+}else{
+  const stckres = stockState(result);
+  res.status(200).json({data:stckres});
+}
+  }else{
+
+    const result = await getPrduct();
+  const stckres = stockState(result);
+  console.log("hello",stckres)
+    res.status(200).json({data:stckres})
+  }
 }catch(error){
 
 
@@ -203,6 +217,39 @@ try{
 
 
 }
+
+function stockState(result){
+
+  const products = result
+
+ const prdctMap = products.map((product) =>{
+const prdctqntty = product.quantity
+const prdctminamnt = product.minimumStock
+const critamnt = Math.floor(prdctminamnt/2)
+let stockStatus
+if(prdctqntty === 0){
+  stockStatus = "OUT_OF_STOCK"
+}else if(prdctqntty === critamnt){
+  stockStatus = 'CRITICAL_STOCK'
+}else if(prdctqntty === prdctminamnt ){
+  stockStatus = 'LOW_STOCK'
+}else{
+  stockStatus = 'IN_STOCK'
+}
+return {
+  ...product,
+  stockStatus,}
+})
+
+return prdctMap
+};
+
+
+
+
+    
+ 
+
 
 
 

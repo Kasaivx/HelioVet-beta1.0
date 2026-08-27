@@ -11,6 +11,7 @@ export async function deleteMedRec(id) {
 }
 
 
+
 export async function getMedRec() {
     
     return await prisma.medicalRecord.findMany()
