@@ -35,3 +35,4 @@ export interface Props {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
 }
+

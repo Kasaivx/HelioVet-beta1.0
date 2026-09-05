@@ -6,6 +6,7 @@ export async function getP() {
       owner: {
         select: {
           name: true,
+          id:false
         },
       },
     },
@@ -18,6 +19,7 @@ export async function searchpatients(search) {
       owner: {
         select: {
           name: true,
+          id:false,
         },
       },
     },
@@ -31,15 +33,15 @@ export async function creatP(data) {
   });
 }
 
-export async function updateP(id, data) {
+export async function updateP(cuid, data) {
   return await prisma.patient.update({
-    where: { id },
+    where: { cuid },
     data,
   });
 }
 
-export async function deleteP(id) {
+export async function deleteP(cuid) {
   return await prisma.patient.delete({
-    where: { id },
+    where: { cuid },
   });
 }

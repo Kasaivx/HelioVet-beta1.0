@@ -1,21 +1,58 @@
 'use client'
 
-import { useAddPtnt } from "@/hooks/hooks/patients";
+import { useAddPtnt, useEditPtnt } from "@/hooks/hooks/patients";
 import style from "./adptnt.module.css"
 import { useState } from "react";
-
-export default function AddPatient(){
-    const [petName,setPetName] = useState('')
-      const [breed, setBreed] = useState("");
-        const [species, setSpecies] = useState("");
+import {Prorps} from '../types/patients'
+export default function AddPatient({patient}:Prorps){
+    const [petName,setPetName] = useState(patient?.PetName??"")
+      const [breed, setBreed] = useState(patient?.breed??"");
+        const [species, setSpecies] = useState(patient?.species??"");
           const [age, setAge] = useState("");
            const [isGuest,setIsGuest] =useState(false)
             const [ownerNid, setOwnerNid] = useState("");
              const [ownerName, setOwnerName] = useState("");
               const [ownerPhone, setOwnerPhone] = useState("");
                const [ownerAddress, setOwnerAddress] = useState("");
+               const AddPatient = useAddPtnt();
+const editPatient = useEditPtnt()
 
-const AddPatient = useAddPtnt()
+              
+              
+                function edit(e: React.FormEvent<HTMLFormElement>){
+                  e.preventDefault();
+                  console.log('edited')
+                    console.log({
+                      petName,
+                      breed,
+                      species,
+                      age,
+                    });
+                       if (!patient) return;
+editPatient.mutate({
+  id: patient.id,
+  data: {
+    petName,
+    breed,
+    species,
+    age: Number(age),
+
+    owner: isGuest
+      ? {
+          isGuest: true,
+          name: ownerName,
+          phone: ownerPhone,
+          address: ownerAddress,
+        }
+      : {
+          isGuest: false,
+          nid: ownerNid,
+        },
+  },
+});
+               
+                }
+
 
 function submition(i: React.FormEvent<HTMLFormElement>) {
   i.preventDefault();
@@ -90,7 +127,7 @@ address: ownerAddress,
             placeholder="Patient Age"
             className={style.name}
             type="number"
-         />
+          />
 
           <label>
             <input
@@ -107,7 +144,7 @@ address: ownerAddress,
               <label htmlFor="ownerNid"></label>
 
               <input
-              id="ownerNid"
+                id="ownerNid"
                 type="text"
                 value={ownerNid}
                 onChange={(i) => setOwnerNid(i.target.value)}
@@ -140,7 +177,7 @@ address: ownerAddress,
               <label htmlFor="ownerAddress"></label>
 
               <input
-              id="ownerAddress"
+                id="ownerAddress"
                 type="text"
                 value={ownerAddress}
                 onChange={(i) => setOwnerAddress(i.target.value)}
@@ -149,10 +186,14 @@ address: ownerAddress,
               />
             </div>
           )}
-          <button type="submit">Add Patient</button>
+          <button type="submit">
+            {patient ? "Edit Patient" : "Add Patient"}Add Patient
+          </button>
         </form>
       </div>
     </div>
   );
-}
 
+
+                }
+              

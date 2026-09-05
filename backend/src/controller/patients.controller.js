@@ -173,22 +173,7 @@ return res.status(400).json({message:err})
     
         
         
-        
-        /*  else if  (Guest === true){
-
-          const guestAcc = await prisma.$transaction(async (tx) =>{
-             const guestOwner = await tx.owner.create({
-                    name:ownerdata.name,
-                    phone:ownerdata.phone,
-                    address:ownerdata.address,
-                    isGuest:Guest
-            
-             })
-
-             return creatPatient
  
-          })*/
-       
 
 
         
