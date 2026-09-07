@@ -13,6 +13,19 @@ export async function getP() {
   });
 }
 
+export async function fetchPatientProfile(cuid){
+        console.log("PATIENT REPOSITORY LOADED");
+
+ return await prisma.patient.findUnique({
+  where:{
+
+cuid
+
+  }
+ })
+
+}
+
 export async function searchpatients(search) {
   return await prisma.patient.findMany({
     include: {

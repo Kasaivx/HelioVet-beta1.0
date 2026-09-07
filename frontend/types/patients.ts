@@ -1,10 +1,11 @@
 export interface Patient{
-id:number,
+cuid:string,
 species:string,
 breed:string,
 age:number,
 PetName:string
 owner:Owner
+isGuest:boolean
 }
 
 export type Owner ={
@@ -36,7 +37,7 @@ export interface Edtpatient {
 }
 
 export interface EdtPatientVars{
-    id:number
+    cuid:string
     data:Edtpatient
 }
 

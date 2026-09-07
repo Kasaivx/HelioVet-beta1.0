@@ -43,7 +43,7 @@ export function useAddPtnt() {
   const mutation = useMutation({
     mutationFn: patientPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["patients"] });
+      queryClient.invalidateQueries({ queryKey: ["patient"] });
     },
   });
 
@@ -52,8 +52,13 @@ export function useAddPtnt() {
 ////post route/////
 
 ////put route/////
-export async function patientPatch({ id, data }: EdtPatientVars) {
-  const edtPtnt = await api.patch<Patient>(`/patients/${id}`, data);
+export async function patientPatch({ cuid, data }: EdtPatientVars) {
+  console.log("🔥 PATCH FUNCTION");
+  console.log("EDIT CUID:", cuid);
+  console.log("EDIT URL:", `/patients/${cuid}`);
+ 
+
+  const edtPtnt = await api.patch<Patient>(`/patients/${cuid}`, data);
 
   return edtPtnt.data;
 }
@@ -64,7 +69,7 @@ export function useEditPtnt() {
   const mutation = useMutation({
     mutationFn: patientPatch,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["patients"] });
+      queryClient.invalidateQueries({ queryKey: ["patient"] });
     },
   });
 
@@ -73,9 +78,9 @@ export function useEditPtnt() {
 
 ////put route/////
 
-export async function DelPatients(id:number) {
+export async function DelPatients(cuid:number) {
  
-    const delted = await api.delete(`/patients/${id}`)
+    const delted = await api.delete(`/patients/${cuid}`)
     return delted
 
 
@@ -85,9 +90,9 @@ export function useDelPatients() {
   return useMutation({
     mutationFn: DelPatients,
     onSuccess: () =>{
-queryClient.invalidateQueries({ queryKey: ["patients"] });
+queryClient.invalidateQueries({ queryKey: ["patient"] });
     },
 
   
   });
-}
+} 

@@ -1,107 +1,111 @@
-'use client'
+"use client";
 
 import { useAddPtnt, useEditPtnt } from "@/hooks/hooks/patients";
-import style from "./adptnt.module.css"
+import style from "./adptnt.module.css";
 import { useState } from "react";
-import {Prorps} from '../types/patients'
-export default function AddPatient({patient}:Prorps){
-    const [petName,setPetName] = useState(patient?.PetName??"")
-      const [breed, setBreed] = useState(patient?.breed??"");
-        const [species, setSpecies] = useState(patient?.species??"");
-          const [age, setAge] = useState("");
-           const [isGuest,setIsGuest] =useState(false)
-            const [ownerNid, setOwnerNid] = useState("");
-             const [ownerName, setOwnerName] = useState("");
-              const [ownerPhone, setOwnerPhone] = useState("");
-               const [ownerAddress, setOwnerAddress] = useState("");
-               const AddPatient = useAddPtnt();
-const editPatient = useEditPtnt()
+import { Prorps } from "../types/patients";
 
-              
-              
-                function edit(e: React.FormEvent<HTMLFormElement>){
-                  e.preventDefault();
-                  console.log('edited')
-                    console.log({
-                      petName,
-                      breed,
-                      species,
-                      age,
-                    });
-                       if (!patient) return;
-editPatient.mutate({
-  id: patient.id,
-  data: {
-    petName,
-    breed,
-    species,
-    age: Number(age),
+export default function AddPatient({ patient }: Prorps) {
+  const addPatient = useAddPtnt();
+  const editPatient = useEditPtnt();
 
-    owner: isGuest
-      ? {
-          isGuest: true,
-          name: ownerName,
-          phone: ownerPhone,
-          address: ownerAddress,
-        }
-      : {
-          isGuest: false,
-          nid: ownerNid,
-        },
-  },
-});
-               
-                }
+  const [petName, setPetName] = useState(patient?.PetName ?? "");
+  const [breed, setBreed] = useState(patient?.breed ?? "");
+  const [species, setSpecies] = useState(patient?.species ?? "");
+  const [age, setAge] = useState(patient?.age?.toString() ?? "");
 
+  const [isGuest, setIsGuest] = useState(false);
+  const [ownerNid, setOwnerNid] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerPhone, setOwnerPhone] = useState("");
+  const [ownerAddress, setOwnerAddress] = useState("");
 
-function submition(i: React.FormEvent<HTMLFormElement>) {
-  i.preventDefault();
+  function edit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-  console.log("SUBMITTED");
+    if (!patient) return;
 
-  console.log({
-    petName,
-    breed,
-    species,
-    age,
-  });
+    console.log("EDITED");
 
-  AddPatient.mutate({
-    petName,
-    breed,
-    species,
-    age: Number(age),
-    owner:isGuest?{
-isGuest :true,
-name: ownerName,
-phone: ownerPhone,
-address: ownerAddress,
-    }:{
-      isGuest: false,
-      nid: ownerNid
-    }
-  });
-}
+    editPatient.mutate({
+      cuid: patient.cuid,
+      data: {
+        petName,
+        breed,
+        species,
+        age: Number(age),
+        owner: isGuest
+          ? {
+              isGuest: true,
+              name: ownerName,
+              phone: ownerPhone,
+              address: ownerAddress,
+            }
+          : {
+              isGuest: false,
+              nid: ownerNid,
+            },
+      },
+    });
+  }
+
+  function submition(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    console.log("SUBMITTED");
+
+    addPatient.mutate({
+      petName,
+      breed,
+      species,
+      age: Number(age),
+      owner: isGuest
+        ? {
+            isGuest: true,
+            name: ownerName,
+            phone: ownerPhone,
+            address: ownerAddress,
+          }
+        : {
+            isGuest: false,
+            nid: ownerNid,
+          },
+    });
+  }
+
   return (
     <div>
       <div>
-        <form onSubmit={submition}>
-          <label htmlFor="petName"> Name</label>
+        
+        <form  onSubmit={(e) => {
+    console.log("🔥 FORM SUBMITTED");
+    console.log("PATIENT INSIDE FORM:", patient);
+    
+    if (patient) {
+      console.log("➡️ EDIT BRANCH");
+      edit(e);
+    } else {
+      console.log("➡️ ADD BRANCH");
+      submition(e);
+    }
+  }}>
+          <label htmlFor="petName">Name</label>
 
           <input
             id="petName"
             value={petName}
-            onChange={(i) => setPetName(i.target.value)}
+            onChange={(e) => setPetName(e.target.value)}
             placeholder="Patient Name"
             className={style.name}
             type="text"
           />
+
           <label htmlFor="species">Species</label>
 
           <input
             id="species"
             value={species}
-            onChange={(i) => setSpecies(i.target.value)}
+            onChange={(e) => setSpecies(e.target.value)}
             placeholder="Patient Species"
             className={style.name}
             type="text"
@@ -112,18 +116,18 @@ address: ownerAddress,
           <input
             id="breed"
             value={breed}
-            onChange={(i) => setBreed(i.target.value)}
+            onChange={(e) => setBreed(e.target.value)}
             placeholder="Patient Breed"
             className={style.name}
             type="text"
           />
 
-          <label htmlFor="age"> Age</label>
+          <label htmlFor="age">Age</label>
 
           <input
             id="age"
             value={age}
-            onChange={(i) => setAge(i.target.value)}
+            onChange={(e) => setAge(e.target.value)}
             placeholder="Patient Age"
             className={style.name}
             type="number"
@@ -133,7 +137,7 @@ address: ownerAddress,
             <input
               type="checkbox"
               checked={isGuest}
-              onChange={(i) => setIsGuest(i.target.checked)}
+              onChange={(e) => setIsGuest(e.target.checked)}
               className={style.name}
             />
             Guest Owner
@@ -141,59 +145,60 @@ address: ownerAddress,
 
           {!isGuest ? (
             <div>
-              <label htmlFor="ownerNid"></label>
+              <label htmlFor="ownerNid">Owner ID</label>
 
               <input
                 id="ownerNid"
                 type="text"
                 value={ownerNid}
-                onChange={(i) => setOwnerNid(i.target.value)}
+                onChange={(e) => setOwnerNid(e.target.value)}
                 placeholder="Owner ID"
                 className={style.name}
               />
             </div>
           ) : (
             <div>
-              <label htmlFor="ownerName"></label>
+              <label htmlFor="ownerName">Owner Name</label>
 
               <input
                 type="text"
                 id="ownerName"
                 value={ownerName}
-                onChange={(i) => setOwnerName(i.target.value)}
+                onChange={(e) => setOwnerName(e.target.value)}
                 placeholder="Owner name"
                 className={style.name}
               />
-              <label htmlFor="ownerPhone"></label>
+
+              <label htmlFor="ownerPhone">Owner Phone</label>
 
               <input
                 type="text"
                 id="ownerPhone"
                 value={ownerPhone}
-                onChange={(i) => setOwnerPhone(i.target.value)}
+                onChange={(e) => setOwnerPhone(e.target.value)}
                 placeholder="Owner phone"
                 className={style.name}
               />
-              <label htmlFor="ownerAddress"></label>
+
+              <label htmlFor="ownerAddress">Owner Address</label>
 
               <input
                 id="ownerAddress"
                 type="text"
                 value={ownerAddress}
-                onChange={(i) => setOwnerAddress(i.target.value)}
+                onChange={(e) => setOwnerAddress(e.target.value)}
                 placeholder="Owner address"
                 className={style.name}
               />
             </div>
           )}
+
           <button type="submit">
-            {patient ? "Edit Patient" : "Add Patient"}Add Patient
+            {patient ? "Edit Patient" : "Add Patient"}
           </button>
         </form>
       </div>
     </div>
   );
+}
 
-
-                }
-              

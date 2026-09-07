@@ -1,4 +1,4 @@
-import {getP,deleteP,updateP,creatP, searchpatients} from "../repos/patient.repository.js"
+import {getP,deleteP,updateP,creatP, searchpatients, fetchPatientProfile} from "../repos/patient.repository.js"
 import {prisma} from "../config/db.js"
 import { findOwnerByNID } from "../repos/user.repository.js";
 import { genNanoID } from "../services/nanoid.service.js";
@@ -31,11 +31,39 @@ res.status(404).json({message:"patient not found"})
 
 
 }}
+
+export async function patientProfile(req,res){
+         const cuid = req.params.cuid
+    console.log( "pcuid", cuid)
+    try{
+              console.log("fetchPatientProfile:", fetchPatientProfile);
+
+     const profile = await fetchPatientProfile(cuid)
+    
+    
+      console.log('fpp was hit') 
+
+    console.log('it worked ig',profile)
+if (!profile){
+
+ return res.status(400).json({message:'patient was not found'})
+
+} else
+      
+  return res.status(200).json({message:'profile was fetched succfully',profile})
+
+}catch(err){
+
+  return res.status(500).json ({message:err.message})
+  console.error("patientProfile error:", err);
+}
+}
+
  export async function deletePatients(req,res) {
-     const id = Number(req.params.id);
+     const cuid = req.params.cuid;
     
     try{
-    const patientDel = await deleteP(id)
+    const patientDel = await deleteP(cuid)
     
     res.status(200).json({message:"patient was deleted succfully",
       data:patientDel
@@ -50,11 +78,11 @@ res.status(404).json({message:"patient not found"})
  }
 
  export async function editPaitent(req,res) {
-    const id = Number(req.params.id)
+    const cuid = req.params.cuid
     try{
 
 
-    const patientEdit = await updateP(id, req.body )
+    const patientEdit = await updateP(cuid, req.body )
       
     res.status(200).json({ message: "patient was edited succefully",
          data: patientEdit });
@@ -130,9 +158,7 @@ console.log("5 BEFORE CREATE");
         }
 
 
-          
-
-
+    
 console.log("BEFORE creatP");
         
              const creatPatient = await prisma.patient.create({
