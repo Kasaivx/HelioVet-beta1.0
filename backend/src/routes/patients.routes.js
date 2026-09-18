@@ -1,5 +1,5 @@
 import express from "express"
-import {getPatients,deletePatients, editPaitent,creatPatient, vetCreatPatient, patientProfile,} from "../controller/patients.controller.js";
+import {getPatients,deletePatients, creatPatient, vetCreatPatient, patientProfile, editPaitent} from "../controller/patients.controller.js";
 import { roleMiddleWare } from "../middleware/role.middleware.js";
 import { authMiddleWare } from "../middleware/auth.middleware.js";
 const router = express.Router();

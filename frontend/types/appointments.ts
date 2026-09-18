@@ -16,13 +16,32 @@ interface Vet {
 }
 
 export interface Appointment {
-  id: string;
+  cuid: string;
   status: AppointmentStatus;
   reason: string;
   date: string;
   patient: Patient;
   vet: Vet;
 }
+
+
+export interface CrtAppointment {
+  status: AppointmentStatus;
+  reason: string;
+  date: string;
+  patient: Patient;
+  vet: Vet;
+}
+
+
+export interface EdtAppointment {
+ data:CrtAppointment
+ cuid:string
+}
+
+
+
+
 
 export type AppointmentStatus =
  |"PENDING"

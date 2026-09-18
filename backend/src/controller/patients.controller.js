@@ -1,7 +1,8 @@
-import {getP,deleteP,updateP,creatP, searchpatients, fetchPatientProfile} from "../repos/patient.repository.js"
+import {getP,deleteP,updateP,creatP, searchpatients, fetchPatientProfile,findPatientByCUID} from "../repos/patient.repository.js"
 import {prisma} from "../config/db.js"
 import { findOwnerByNID } from "../repos/user.repository.js";
 import { genNanoID } from "../services/nanoid.service.js";
+import e from "cors";
 export async function getPatients(req,res) {
   console.log("waaaa l9lawy")
   const { search } = req.query;
@@ -76,26 +77,97 @@ if (!profile){
 
     }
  }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
- export async function editPaitent(req,res) {
+export async function editPaitent(req,res) {
     const cuid = req.params.cuid
+    const patientdata = req.body
+    console.log("pd",patientdata)
+    const ownerdata =patientdata.owner
+    const isGuest =ownerdata.isGuest
+    console.log(isGuest)
+  const NID =  ownerdata.nid
+  console.log(NID)
+
     try{
 
+     const findpatient = await findPatientByCUID(cuid)
+     console.log(findpatient)
 
-    const patientEdit = await updateP(cuid, req.body )
-      
-    res.status(200).json({ message: "patient was edited succefully",
-         data: patientEdit });
-    }catch (error){
+
+if (findpatient.PetName === patientdata.PetName && findpatient.age === patientdata.age && findpatient.breed === patientdata.breed && findpatient.species === patientdata.species
+){ return res.status(400).json({message:'the info are the same pls change the info'})}
+
+console.log('p data checl done')
+       const patientedit = await prisma.$transaction(async(tx)=>{
+      const patient = await tx.patient.update({where:{cuid
+      },
+      data:{
+      PetName: patientdata.PetName,
+    breed: patientdata.breed,
+    species: patientdata.species,
+    age: patientdata.age
+      }},
+    
+    
+      )
+
+console.log('done', patient)
+
+if (findpatient.owner.isGuest === true && isGuest === true){
+  
+console.log('its donne probbly')
+
+  if(findpatient.owner.name === ownerdata.name &&  findpatient.owner.phone === ownerdata.phone && findpatient.owner.address === ownerdata.address){
+    return res.status(400).json({message:'the info are the same g pls change the info'})}
+  }else{
+  const guest = await tx.owner.update({where:{patients :{
+    cuid
+  }
+
+   } })
+  console.log('done',guest)}
+
+if (NID)
+{
+  
+const nidLink = await 
+
+
+tx.patient.update(
+{where:{cuid},
+data:{owner:{
+   connect: { nid: NID},
+}}
+  }
+
+)
+
+return patient
+
+}
+
+
+},
+       )
+       res.status(200).json({ message: "patient was edited succefully",
+         data: patientedit })
+}catch (error){
           
-     
-        res.status(400).json({message:error.message})
+       console.error(error.stack)
+        return res.status(400).json({message:error.message})
           
 
 
     }
- }
-  
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
  export async function creatPatient(req,res) {
     try{
    const owner = await prisma.owner.findUnique({
@@ -162,7 +234,7 @@ console.log("5 BEFORE CREATE");
 console.log("BEFORE creatP");
         
              const creatPatient = await prisma.patient.create({
-              data:{  PetName: patientData.petName,
+              data:{  PetName: patientData.PetName,
                species: patientData.species,
                breed: patientData.breed,
                age: patientData.age,
@@ -230,3 +302,4 @@ return res.status(400).json({message:err})
       
     
      }
+    

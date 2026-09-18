@@ -4,9 +4,13 @@ import style from "@/app/appointments/appcon.module.css"
 import SearchEng from "@/components/searchEng";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import Modal from "@/components/modal";
 export default function Appointment(){
   const [search, setSearch] = useState("");
-return (
+  const [open, setOpen] = useState(false);
+
+  
+  return (
   <div className={style.frammos}>
     <div className={style.appointframe}>
       <div className={style.words}>
@@ -14,8 +18,8 @@ return (
         <p>Manage your clinic schedule</p>
 
         <div className={style.apps}>
-          <button className={style.btn}>Add Appointment</button>
-          <Plus className={style.plus} />
+          <button onClick={() => setOpen(true) }className={style.btn }>Add Appointment</button>
+{open &&(<Modal onClose={()=> setOpen(false)}></Modal>)}
         </div>
       </div>
       <div className={style.schengf}>

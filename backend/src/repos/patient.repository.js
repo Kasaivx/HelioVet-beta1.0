@@ -6,7 +6,11 @@ export async function getP() {
       owner: {
         select: {
           name: true,
-          id:false
+          id:false,
+          isGuest:true,
+          phone:true,
+          address:true
+          
         },
       },
     },
@@ -57,4 +61,14 @@ export async function deleteP(cuid) {
   return await prisma.patient.delete({
     where: { cuid },
   });
+}
+
+
+export async function findPatientByCUID(cuid){
+return await prisma.patient.findUnique({
+  where:{cuid},
+  include:{
+    owner:true
+  }
+})
 }

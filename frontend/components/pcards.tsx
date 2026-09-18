@@ -1,5 +1,5 @@
 "use client";
-import { usePatients } from "@/hooks/hooks/patients";
+import { useDelPatients, usePatients } from "@/hooks/hooks/patients";
 import style from "@/components/pcard.module.css"
 import { Patient } from "@/types/patients";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import { Props } from "@/types/appointments";
 
 export default function PatientsCard({ search, setSearch }:Props) {
 
+const {mutate : DelPs} = useDelPatients()
 
   const [editing, isEditing] = useState<Patient|null>(null);
 
@@ -42,6 +43,8 @@ export default function PatientsCard({ search, setSearch }:Props) {
                     <AddPatient patient ={editing} />
                   </Modal>
                 )}
+
+                <button onClick={() => DelPs(currentpatient.cuid)}>DEL</button>
               </div>
               <h3>{currentpatient.PetName}</h3>
               <p>{currentpatient.breed}</p>

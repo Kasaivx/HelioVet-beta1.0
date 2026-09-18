@@ -21,7 +21,7 @@ isGuest: boolean;
  
 
 export interface Crtpatient {
-  petName: string;
+  PetName: string;
   species: string;
   breed: string;
   age: number;
@@ -32,7 +32,7 @@ export interface Edtpatient {
   address?:string;
   breed?: string;
   age?: number;
-  petName?: string;
+  PetName?: string;
   owner?: Owner;
 }
 

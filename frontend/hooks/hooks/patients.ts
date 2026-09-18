@@ -78,7 +78,7 @@ export function useEditPtnt() {
 
 ////put route/////
 
-export async function DelPatients(cuid:number) {
+export async function DelPatients(cuid:string) {
  
     const delted = await api.delete(`/patients/${cuid}`)
     return delted
@@ -92,7 +92,6 @@ export function useDelPatients() {
     onSuccess: () =>{
 queryClient.invalidateQueries({ queryKey: ["patient"] });
     },
-
   
   });
-} 
+}

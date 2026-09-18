@@ -9,15 +9,15 @@ export default function AddPatient({ patient }: Prorps) {
   const addPatient = useAddPtnt();
   const editPatient = useEditPtnt();
 
-  const [petName, setPetName] = useState(patient?.PetName ?? "");
+  const [PetName, setPetName] = useState(patient?.PetName ?? "");
   const [breed, setBreed] = useState(patient?.breed ?? "");
   const [species, setSpecies] = useState(patient?.species ?? "");
   const [age, setAge] = useState(patient?.age?.toString() ?? "");
 
-  const [isGuest, setIsGuest] = useState(false);
-  const [ownerNid, setOwnerNid] = useState("");
-  const [ownerName, setOwnerName] = useState("");
-  const [ownerPhone, setOwnerPhone] = useState("");
+  const [isGuest, setIsGuest] = useState(  patient?.owner?.isGuest ??false);
+  const [ownerNid, setOwnerNid] = useState(patient?.owner.nid ?? "");
+  const [ownerName, setOwnerName] = useState(patient?.owner.name??"")
+  const [ownerPhone, setOwnerPhone] = useState(patient?.owner.phone??"");
   const [ownerAddress, setOwnerAddress] = useState("");
 
   function edit(e: React.FormEvent<HTMLFormElement>) {
@@ -30,7 +30,7 @@ export default function AddPatient({ patient }: Prorps) {
     editPatient.mutate({
       cuid: patient.cuid,
       data: {
-        petName,
+        PetName,
         breed,
         species,
         age: Number(age),
@@ -55,7 +55,7 @@ export default function AddPatient({ patient }: Prorps) {
     console.log("SUBMITTED");
 
     addPatient.mutate({
-      petName,
+      PetName,
       breed,
       species,
       age: Number(age),
@@ -93,7 +93,7 @@ export default function AddPatient({ patient }: Prorps) {
 
           <input
             id="petName"
-            value={petName}
+            value={PetName}
             onChange={(e) => setPetName(e.target.value)}
             placeholder="Patient Name"
             className={style.name}
@@ -133,7 +133,7 @@ export default function AddPatient({ patient }: Prorps) {
             type="number"
           />
 
-          <label>
+ <label>
             <input
               type="checkbox"
               checked={isGuest}
